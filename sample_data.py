@@ -1,6 +1,6 @@
 import random
 
-from models import User
+from models import Position, User
 
 FIRST_NAMES = [
     "Abena", "Adaeze", "Alejandro", "Alice", "Ama", "Amara", "Amira", "Ananya",
@@ -33,8 +33,75 @@ LAST_NAMES = [
 ]
 
 
+COMPANIES = [
+    "3M", "Abbott", "Accor", "Accenture", "Adobe", "Adidas", "Airbnb", "Airbus",
+    "Allianz", "Alibaba", "Amazon", "American Express", "Apple", "AstraZeneca",
+    "AT&T", "Atlassian", "AXA", "Bain & Company", "Banco Santander", "Bank of America",
+    "Barclays", "BASF", "Bayer", "BCG", "Bechtel", "Berkshire Hathaway", "BMW",
+    "BNP Paribas", "Boeing", "Booz Allen Hamilton", "Bosch", "BP", "Bristol-Myers Squibb",
+    "British Airways", "ByteDance", "Carrefour", "Caterpillar", "CBRE", "Chevron",
+    "Cisco", "Citibank", "Cloudflare", "Coca-Cola", "Colgate-Palmolive", "Comcast",
+    "Compass Group", "CrowdStrike", "CVS Health", "Datadog", "Databricks", "Dell",
+    "Deloitte", "Delta Air Lines", "Deutsche Bank", "Deutsche Telekom", "DHL",
+    "Disney", "DocuSign", "eBay", "Eli Lilly", "Emirates", "Equinor", "Ericsson",
+    "Etsy", "ExxonMobil", "EY", "FedEx", "Fidelity", "Flipkart", "Ford",
+    "General Electric", "General Motors", "GlaxoSmithKline", "Goldman Sachs", "Google",
+    "Grab", "H&M", "Halliburton", "Hilton", "Honda", "Honeywell", "HP",
+    "HSBC", "Huawei", "Hyundai", "IBM", "IKEA", "Infosys", "Intel",
+    "Johnson & Johnson", "Jones Lang LaSalle", "JPMorgan Chase", "Kaiser Permanente",
+    "Kimberly-Clark", "KPMG", "L'Oréal", "Lidl", "LinkedIn", "Lockheed Martin",
+    "Lufthansa", "Maersk", "Marriott", "Mastercard", "Mayo Clinic", "McDonald's",
+    "McKinsey", "Medtronic", "Mercedes-Benz", "Merck", "Meta", "Microsoft",
+    "Moderna", "Morgan Stanley", "Nestlé", "Netflix", "News Corp", "Nike",
+    "Nokia", "Novartis", "Nvidia", "Oliver Wyman", "Oracle", "Orange", "Palantir",
+    "Paramount", "PayPal", "Pearson", "PepsiCo", "Pfizer", "Philip Morris",
+    "Procter & Gamble", "PwC", "Qualcomm", "Rakuten", "Red Hat", "Roche",
+    "Ryanair", "Samsung", "Sanofi", "SAP", "Saudi Aramco", "Schlumberger",
+    "Sea Group", "ServiceNow", "Shell", "Shopify", "Siemens", "Singapore Airlines",
+    "Slack", "Snowflake", "SoftBank", "Sony", "Spotify", "Splunk", "Starbucks",
+    "Stellantis", "Stripe", "T-Mobile", "Tata Consultancy", "Telefónica", "Tesla",
+    "Tesco", "Texas Instruments", "TotalEnergies", "Toyota", "Twilio", "Uber",
+    "UBS", "Unilever", "Uniqlo", "United Airlines", "UnitedHealth Group", "Universal Music Group",
+    "UPS", "Vanguard", "Verizon", "Vinci", "Visa", "VMware", "Volkswagen",
+    "Vodafone", "Walmart", "Warner Bros. Discovery", "Wells Fargo", "Wipro",
+    "Workday", "Yum! Brands", "Zalando", "Zoom",
+]
+
+TITLES = [
+    "Account Executive", "Account Manager", "Actuary", "Administrative Director",
+    "Associate Consultant", "Backend Engineer", "Brand Manager", "Business Analyst",
+    "Business Development Manager", "Chief Executive Officer", "Chief Financial Officer",
+    "Chief of Staff", "Chief Operating Officer", "Clinical Research Associate",
+    "Compliance Manager", "Compliance Officer", "Content Strategist", "Controller",
+    "Credit Analyst", "Data Engineer", "Data Scientist", "DevOps Engineer",
+    "Engineering Manager", "Executive Assistant", "Financial Analyst", "Frontend Engineer",
+    "Full Stack Engineer", "General Counsel", "Growth Manager", "Head of Product",
+    "Healthcare Administrator", "HR Business Partner", "Investment Banker",
+    "Legal Counsel", "Logistics Manager", "Management Consultant", "Marketing Manager",
+    "Medical Affairs Manager", "ML Engineer", "Office Manager", "Operations Director",
+    "Operations Manager", "Paralegal", "People Operations Manager", "Portfolio Manager",
+    "Principal Engineer", "Procurement Manager", "Product Designer", "Product Manager",
+    "Project Manager", "Public Relations Manager", "QA Engineer", "Recruiter",
+    "Regional Sales Manager", "Risk Analyst", "Sales Representative", "Security Engineer",
+    "Site Reliability Engineer", "Social Media Manager", "Software Architect",
+    "Software Engineer", "Solutions Architect", "Strategy Consultant", "Supply Chain Manager",
+    "Talent Acquisition Specialist", "Technical Lead", "Trader", "UX Designer",
+    "VP of Engineering", "VP of Sales", "Wealth Manager",
+]
+
+
+def generate_employment_history() -> list[Position]:
+    return [
+        Position(company=random.choice(COMPANIES), title=random.choice(TITLES))
+        for _ in range(random.randint(1, 5))
+    ]
+
+
 def generate_users(count: int) -> list[User]:
     return [
-        User(name=f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}")
+        User(
+            name=f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}",
+            employment_history=generate_employment_history(),
+        )
         for _ in range(count)
     ]
