@@ -2,6 +2,7 @@ from alembic import command
 from alembic.config import Config
 
 from db import clear_data, fetch_users, get_engine, insert_connections, insert_users
+from embeddings import generate_and_store_embeddings
 from sample_data import generate_connections, generate_users
 
 
@@ -27,3 +28,5 @@ if __name__ == "__main__":
         print(f"  {user.name}")
         for position in user.employment_history:
             print(f"    {position.title} at {position.company}")
+
+    generate_and_store_embeddings(users)
