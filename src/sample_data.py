@@ -1,5 +1,7 @@
 import random
 
+from uuid import UUID, uuid4
+
 from models import Position, User
 
 FIRST_NAMES = [
@@ -100,8 +102,19 @@ def generate_employment_history() -> list[Position]:
 def generate_users(count: int) -> list[User]:
     return [
         User(
+            id=uuid4(),
             name=f"{random.choice(FIRST_NAMES)} {random.choice(LAST_NAMES)}",
             employment_history=generate_employment_history(),
         )
         for _ in range(count)
     ]
+
+
+def generate_connections(users: list[User]) -> list[tuple[UUID, UUID]]:
+    user_ids = [u.id for u in users]
+    pairs: set[tuple[UUID, UUID]] = set()
+    for user_id in user_ids:
+        others = random.sample([uid for uid in user_ids if uid != user_id], random.randint(5, 30))
+        for other_id in others:
+            pairs.add((min(user_id, other_id), max(user_id, other_id)))
+    return list(pairs)
