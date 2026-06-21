@@ -20,3 +20,9 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://ragpoc:ragpoc@db:5432/ragpoc
+      FASTEMBED_CACHE_DIR: /fastembed-cache
+    volumes:
+      - fastembed-cache:/fastembed-cache
+
+volumes:
+  fastembed-cache:

@@ -1,3 +1,5 @@
+import os
+
 import chromadb
 from fastembed import TextEmbedding
 
@@ -15,7 +17,7 @@ def profile_to_text(user: User) -> str:
 
 
 def generate_and_store_embeddings(users: list[User]) -> None:
-    model = TextEmbedding(_MODEL_NAME)
+    model = TextEmbedding(_MODEL_NAME, cache_dir=os.environ["FASTEMBED_CACHE_DIR"])
     client = chromadb.EphemeralClient()
     collection = client.get_or_create_collection(_COLLECTION_NAME)
 
