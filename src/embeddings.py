@@ -15,9 +15,10 @@ def profile_to_text(user: User) -> str:
         return f"{user.name}. Employment history: {roles}."
     return f"{user.name}."
 
+def get_model() -> TextEmbedding:
+    return TextEmbedding(_MODEL_NAME, cache_dir=os.environ["FASTEMBED_CACHE_DIR"])
 
-def generate_and_store_embeddings(users: list[User]) -> None:
-    model = TextEmbedding(_MODEL_NAME, cache_dir=os.environ["FASTEMBED_CACHE_DIR"])
+def generate_and_store_embeddings(users: list[User], model: TextEmbedding) -> chromadb.Collection:
     client = chromadb.EphemeralClient()
     collection = client.get_or_create_collection(_COLLECTION_NAME)
 
@@ -30,3 +31,12 @@ def generate_and_store_embeddings(users: list[User]) -> None:
         documents=texts,
     )
     print(f"Stored embeddings for {len(users)} users.")
+    return collection
+
+
+def search_similar_users(
+    collection: chromadb.Collection, model: TextEmbedding, query: str, n_results: int = 3
+) -> list[tuple[str, float]]:
+    [query_embedding] = list(model.embed([query]))
+    results = collection.query(query_embeddings=[query_embedding], n_results=n_results)
+    return list(zip(results["ids"][0], results["distances"][0]))

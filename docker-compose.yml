@@ -23,6 +23,8 @@ services:
       FASTEMBED_CACHE_DIR: /fastembed-cache
     volumes:
       - fastembed-cache:/fastembed-cache
+    stdin_open: true
+    tty: true
 
 volumes:
   fastembed-cache:

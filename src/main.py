@@ -2,12 +2,32 @@ from alembic import command
 from alembic.config import Config
 
 from db import clear_data, fetch_users, get_engine, insert_connections, insert_users
-from embeddings import generate_and_store_embeddings
+from embeddings import generate_and_store_embeddings, get_model, search_similar_users
 from sample_data import generate_connections, generate_users
 
 
 def run_migrations() -> None:
     command.upgrade(Config("alembic.ini"), "head")
+
+
+def run_search_loop(users, model, collection) -> None:
+    users_by_id = {str(user.id): user for user in users}
+
+    print("\nEnter a search query and press Enter (empty line to quit).")
+    while True:
+        try:
+            query = input("\nSearch> ").strip()
+        except EOFError:
+            break
+        if not query:
+            break
+
+        matches = search_similar_users(collection, model, query, n_results=3)
+        print(f"Top {len(matches)} matches for {query!r}:")
+        for rank, (user_id, distance) in enumerate(matches, start=1):
+            user = users_by_id[user_id]
+            roles = ", ".join(f"{p.title} at {p.company}" for p in user.employment_history)
+            print(f"  {rank}. {user.name} (distance={distance:.4f}) - {roles}")
 
 
 if __name__ == "__main__":
@@ -21,12 +41,9 @@ if __name__ == "__main__":
         insert_users(conn, users)
         connections = generate_connections(users)
         insert_connections(conn, connections)
-        first_ten = fetch_users(conn, 10)
 
-    print(f"Saved {len(users)} users and {len(connections)} connections. First 10 from DB:\n")
-    for user in first_ten:
-        print(f"  {user.name}")
-        for position in user.employment_history:
-            print(f"    {position.title} at {position.company}")
+    print(f"Saved {len(users)} users and {len(connections)} connections.")
 
-    generate_and_store_embeddings(users)
+    model = get_model()
+    collection = generate_and_store_embeddings(users, model)
+    run_search_loop(users, model, collection)
