@@ -21,6 +21,7 @@ services:
     environment:
       DATABASE_URL: postgresql://ragpoc:ragpoc@db:5432/ragpoc
       FASTEMBED_CACHE_DIR: /fastembed-cache
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
     volumes:
       - fastembed-cache:/fastembed-cache
     stdin_open: true
